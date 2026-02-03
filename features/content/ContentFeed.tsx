@@ -225,11 +225,10 @@ export function ContentFeed() {
           <div className="text-center max-w-md">
             <h3 className="text-base sm:text-lg font-semibold mb-2">Failed to load content</h3>
             <p className="text-sm sm:text-base text-slate-500 dark:text-slate-400 mb-4">
-              There was an error fetching your content. Please check your API keys.
+              There was an error fetching your content. Please check your API configuration.
             </p>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              Make sure to create a <code className="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">.env.local</code> file
-              with your API keys.
+              API keys are required. Check environment variables configuration.
             </p>
           </div>
         </div>
