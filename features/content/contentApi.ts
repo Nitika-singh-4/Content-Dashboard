@@ -32,29 +32,14 @@ interface TMDBResponse {
   }>;
 }
 
-// Access environment variables at module level for Vercel deployment
-const NEWS_API_KEY = process.env.NEXT_PUBLIC_NEWS_API_KEY || '';
-const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY || '';
-
-// Log environment variable status (will show in browser console)
-if (typeof window !== 'undefined') {
-  console.log('API Keys Status:', {
-    newsApiKey: NEWS_API_KEY ? `${NEWS_API_KEY.substring(0, 8)}...` : 'MISSING',
-    tmdbApiKey: TMDB_API_KEY ? `${TMDB_API_KEY.substring(0, 8)}...` : 'MISSING',
-  });
-}
-
 export const contentApi = createApi({
   reducerPath: 'contentApi',
-  baseQuery: fetchBaseQuery({ baseUrl: '/' }),
+  baseQuery: fetchBaseQuery({ baseUrl: '/api' }),
   endpoints: (builder) => ({
-    // Fetch news from News API
+    // Fetch news from local API route
     getNews: builder.query<NewsContent[], { category: string; pageSize?: number }>({
-      query: ({ category, pageSize = 20 }) => {
-        return {
-          url: `https://newsapi.org/v2/top-headlines?country=us&category=${category}&pageSize=${pageSize}&apiKey=${NEWS_API_KEY}`,
-        };
-      },
+      query: ({ category, pageSize = 20 }) => 
+        `/news?category=${category}&pageSize=${pageSize}`,
       transformResponse: (response: NewsApiResponse): NewsContent[] => {
         return response.articles.map((article, index) => ({
           id: `news-${article.source.name}-${index}-${Date.now()}`,
@@ -71,14 +56,10 @@ export const contentApi = createApi({
       },
     }),
 
-    // Fetch recommendations from TMDB
+    // Fetch recommendations from local API route
     getRecommendations: builder.query<RecommendationContent[], { type: 'movie' | 'tv'; page?: number }>({
-      query: ({ type, page = 1 }) => {
-        const endpoint = type === 'movie' ? 'movie/popular' : 'tv/popular';
-        return {
-          url: `https://api.themoviedb.org/3/${endpoint}?api_key=${TMDB_API_KEY}&page=${page}`,
-        };
-      },
+      query: ({ type, page = 1 }) => 
+        `/recommendations?type=${type}&page=${page}`,
       transformResponse: (response: TMDBResponse, _meta, arg): RecommendationContent[] => {
         return response.results.slice(0, 10).map((item) => ({
           id: `tmdb-${arg.type}-${item.id}`,
@@ -96,9 +77,9 @@ export const contentApi = createApi({
       },
     }),
 
-    // Fetch mock social content (local JSON)
+    // Fetch social content from local API route
     getSocialContent: builder.query<Content[], void>({
-      query: () => '/mock-data/social.json',
+      query: () => '/social',
     }),
   }),
 });
