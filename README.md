@@ -220,15 +220,3 @@ This is a portfolio project. Suggestions are welcome:
 4. Push to branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
-
-This project is created as an internship assignment and is open for educational purposes.
-
-## 👤 Author
-
-**Nitika Singh**  
-Built with ❤️ as a frontend internship assignment demonstrating modern React, Next.js, and Redux best practices.
-
----
-
-⭐ Star this repository if you find it helpful!
