@@ -36,6 +36,14 @@ interface TMDBResponse {
 const NEWS_API_KEY = process.env.NEXT_PUBLIC_NEWS_API_KEY || '';
 const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY || '';
 
+// Log environment variable status (will show in browser console)
+if (typeof window !== 'undefined') {
+  console.log('API Keys Status:', {
+    newsApiKey: NEWS_API_KEY ? `${NEWS_API_KEY.substring(0, 8)}...` : 'MISSING',
+    tmdbApiKey: TMDB_API_KEY ? `${TMDB_API_KEY.substring(0, 8)}...` : 'MISSING',
+  });
+}
+
 export const contentApi = createApi({
   reducerPath: 'contentApi',
   baseQuery: fetchBaseQuery({ baseUrl: '/' }),
