@@ -32,6 +32,10 @@ interface TMDBResponse {
   }>;
 }
 
+// Access environment variables at module level for Vercel deployment
+const NEWS_API_KEY = process.env.NEXT_PUBLIC_NEWS_API_KEY || '';
+const TMDB_API_KEY = process.env.NEXT_PUBLIC_TMDB_API_KEY || '';
+
 export const contentApi = createApi({
   reducerPath: 'contentApi',
   baseQuery: fetchBaseQuery({ baseUrl: '/' }),
@@ -39,9 +43,8 @@ export const contentApi = createApi({
     // Fetch news from News API
     getNews: builder.query<NewsContent[], { category: string; pageSize?: number }>({
       query: ({ category, pageSize = 20 }) => {
-        const apiKey = process.env.NEXT_PUBLIC_NEWS_API_KEY;
         return {
-          url: `https://newsapi.org/v2/top-headlines?country=us&category=${category}&pageSize=${pageSize}&apiKey=${apiKey}`,
+          url: `https://newsapi.org/v2/top-headlines?country=us&category=${category}&pageSize=${pageSize}&apiKey=${NEWS_API_KEY}`,
         };
       },
       transformResponse: (response: NewsApiResponse): NewsContent[] => {
@@ -63,10 +66,9 @@ export const contentApi = createApi({
     // Fetch recommendations from TMDB
     getRecommendations: builder.query<RecommendationContent[], { type: 'movie' | 'tv'; page?: number }>({
       query: ({ type, page = 1 }) => {
-        const apiKey = process.env.NEXT_PUBLIC_TMDB_API_KEY;
         const endpoint = type === 'movie' ? 'movie/popular' : 'tv/popular';
         return {
-          url: `https://api.themoviedb.org/3/${endpoint}?api_key=${apiKey}&page=${page}`,
+          url: `https://api.themoviedb.org/3/${endpoint}?api_key=${TMDB_API_KEY}&page=${page}`,
         };
       },
       transformResponse: (response: TMDBResponse, _meta, arg): RecommendationContent[] => {
